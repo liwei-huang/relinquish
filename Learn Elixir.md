@@ -630,6 +630,20 @@ a_keywords = [{:a, 10}, {:b, false}, {:a, 20}]
 IO.inspect(a_keywords[:a])
 ```
 
+一些块能够改写䔺关键字列表，有 `do` 潡 `else` 潡 `catch` 潡 `rescue` 和 `after` 袤
+
+```elixir
+# 1. `do` 块
+if true do
+  IO.puts("This will be seen.")
+else
+  IO.puts("This won't")
+end
+
+# 1. 顶层的关键字列表
+if true, do: IO.puts("This will be seen."), else: IO.puts("This won't")
+```
+
 ### 映射
 
 霑：
@@ -694,4 +708,20 @@ mapple
 # 2. 更新语法
 # %{2 => true, :a => 10}
 IO.inspect(%{mapple | 2 => true})
+```
+
+### 一些方法
+
+此处介绍两个**宏**，以操作关联数据结构。
+
+```elixir
+users = [
+  john: %{name: "John", age: 27, languages: ["Erlang", "Ruby", "Elixir"]},
+  mary: %{name: "Mary", age: 29, languages: ["Elixir", "Furthark", "Clojure"]}
+]
+
+# 1. put_in/2, 更新值
+users = put_in(users[:john].age, 31)
+# 2. update_in/2，更新值，回调函数决定怎么更新
+users = update_in(users[:mary].languages, fn langs -> List.delete(langs, "Furthark") end)
 ```
