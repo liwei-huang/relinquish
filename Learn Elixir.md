@@ -21,6 +21,14 @@
 | `iex.bat`                | 进入交互模式                 |
 | `iex.bat --werl`         | Windows 平台下更好的交互模式 |
 
+霑 Elixir 项目结构：
+
+- `_build`，编译产物
+- `lib`，源代码，通常包含 `.ex` 文件
+- `test`，测试，通常包含 `.exs` 文件
+
+文件 `.ex` 与 `.exs` 的几乎一样，前者用于编译，后者用于脚本。
+
 ## 预备知识
 
 ### 编写风格
@@ -724,4 +732,218 @@ users = [
 users = put_in(users[:john].age, 31)
 # 2. update_in/2，更新值，回调函数决定怎么更新
 users = update_in(users[:mary].languages, fn langs -> List.delete(langs, "Furthark") end)
+```
+
+## 模块和函数
+
+通常将一些函数放在一个模块中。
+
+- `defmodule` 定义模块，`def` 定义函数，`defp` 定义私有函数，只能在模块内部使用
+- 模块名首字母大写，函数名首字母小写或者䔺下划线
+- 函数只能定义在模块中
+
+```elixir
+defmodule Malch do
+  def sum(a, b) do
+    a + b
+  end
+
+  defp sub(a, b) do
+    a - b
+  end
+
+  def mub(a, b) do
+    sum(a, b) * sub(a, b)
+  end
+end
+
+IO.inspect(Malch.sum(5, 2))
+IO.inspect(Malch.mub(5, 2))
+```
+
+函数：
+
+- 函数名后面的 `?` 表示该函数返回布尔值
+- 支持守卫，即 `when` 守卫
+- 支持多个从句，实参不满足任何从句时，报错
+
+```elixir
+defmodule Malch do
+  # `0` 代表模式匹配，即实参寔等于 `0`
+  # 此函数 `zero?/1` 的第一个从句
+  def zero?(0) do
+    true
+  end
+
+  # 此函数 `zero?/1` 的第二个从句
+  def zero?(x) when is_integer(x) do
+    false
+  end
+end
+
+IO.inspect(Malch.zero?(0))
+IO.inspect(Malch.zero?(1))
+```
+
+### 函数捕获
+
+以 `&func_name/arity` 形式捕获函数，赋值给变量，变量变䔺该函数的匿名函数版本。
+
+```elixir
+defmodule Malch do
+  def greet(person) do
+    IO.puts("Hello, #{person}!")
+  end
+end
+
+# 捕获函数
+aggre = &Malch.greet/1
+aggre.("Vootue")
+
+# 捕获操作符（也属于函数）
+add = &+/2
+IO.inspect(add.(1, 2))
+
+# 简写捕获函数，`&1` 和 `&2` 代表第一个参数和第二个参数
+phun = &(&2 * 4 - &1 * 6)
+# 等同于
+pun = fn a, b -> b * 4 - a * 6 end
+# 都䔺 `2`
+IO.inspect(phun.(1, 2))
+IO.inspect(pun.(1, 2))
+```
+
+### 默认参数
+
+霑：
+
+- 默认参数后面支持任何表达式，只有在默认参数需要使用时，才解析执行
+- 函数有多个从句，并且使用了默认参数时，需要声明**函数头**，函数头没有函数体
+
+```elixir
+defmodule Malch do
+  # 参数 `sep` 的默认值是一个空格
+  def join(a, b, sep \\ " ") do
+    a <> sep <> b
+  end
+
+  # 函数头
+  def hoin(a, b \\ nil, sep \\ " ")
+
+  # 不使用 `_sep`，以下划线开头
+  def hoin(a, b, _sep) when is_nil(b) do
+    a
+  end
+
+  def hoin(a, b, sep) do
+    a <> sep <> b
+  end
+end
+
+# elixir erlang
+IO.puts(Malch.join("elixir", "erlang"))
+# elixir_erlang
+IO.puts(Malch.join("elixir", "erlang", "_"))
+
+# 依次䔺
+# elixir
+# elixir erlang
+# elixir_erlang
+IO.puts(Malch.hoin("elixir"))
+IO.puts(Malch.hoin("elixir", "erlang"))
+IO.puts(Malch.hoin("elixir", "erlang", "_"))
+```
+
+### 递归
+
+函数体内调用自己，直到满足某个条件，终止调用自己，即递归结束。
+
+```elixir
+defmodule Acc do
+  # 递归从句
+  def sum_list([head | tail], accumulator) do
+    sum_list(tail, head + accumulator)
+  end
+
+  # 终止从句
+  def sum_list([], accumulator) do
+    accumulator
+  end
+end
+
+# 0 + 1 + 3 + 5 = 9
+IO.puts(Acc.sum_list([1, 3, 5], 0))
+```
+
+## 枚举和流
+
+枚举模块提供一些函数，处理**可枚举体**（实现了**可枚举协议**的数据），这些函数是**多态的**，因为它们能够接收不同类型的数据。枚举模块里面的许多函数是**热切**的，预期一个可枚举体，并返回一个最终列表，其中的每一个操作会生成中间列表，直到最后一个。
+
+```elixir
+abandon = Enum.map([10, 20, 30], fn x -> x * 2 end)
+burry = Enum.map(%{:a => 2, :b => 4}, fn {_k, v} -> v * 2 end)
+
+# [20, 40, 60]
+IO.inspect(abandon)
+# [4, 8]
+IO.inspect(burry)
+
+# **范围**实现了可枚举协议
+crag = Enum.map(1..3, fn x -> x * 2 end)
+# 捕获函数
+daggle = Enum.reduce(1..3, 0, &+/2)
+
+IO.inspect(crag)
+IO.inspect(daggle)
+```
+
+### 管道操作符
+
+管道操作符，将左边的值，作䔺，右边函数的第一个参数，传递调用。
+
+```elixir
+odd? = &(rem(&1, 2) != 0)
+
+1..100_000 |> Enum.map(&(&1 * 3)) |> Enum.filter(odd?) |> Enum.sum() |> IO.inspect()
+```
+
+### 流
+
+流类似枚举，但：
+
+- 流是**懒惰**的，与枚举的**热切**对立
+- 操作返回**计算**，不是最终结果，计算传递给枚举处理才能得到最终的结果
+- 流适合处理庞大、 可能无限的集合
+
+```elixir
+odd? = &(rem(&1, 2) != 0)
+
+# step 1
+# #Stream<[enum: 1..100000, funs: [#Function<48.29975488/1 in Stream.map/2>]]>
+1..100_000 |> Stream.map(&(&1 * 3)) |> IO.inspect()
+# step 2
+# #Stream<[
+#   enum: 1..100000,
+#   funs: [#Function<48.29975488/1 in Stream.map/2>,
+#    #Function<40.29975488/1 in Stream.filter/2>]
+# ]>
+1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?) |> IO.inspect()
+# finally
+# 7500000000
+1..100_000 |> Stream.map(&(&1 * 3)) |> Stream.filter(odd?) |> Enum.sum() |> IO.inspect()
+```
+
+一些函数：
+
+```elixir
+# 1. Stream.cycle/1
+scycle = Stream.cycle([10, 20, 30])
+# `10` 代表取出 10 个元素
+# [10, 20, 30, 10, 20, 30, 10, 20, 30, 10]
+IO.inspect(Enum.take(scycle, 10))
+
+# 2. Stream.unfold/2
+umphold = Stream.unfold("hełło", &String.next_codepoint/1)
+# ["h", "e", "ł"]
+IO.inspect(Enum.take(umphold, 3))
 ```
