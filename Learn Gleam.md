@@ -879,7 +879,3 @@ pub fn do_stuff(input: List(Int)) -> Int {
   list.length(input)
 }
 ```
-
-## 结束
-
-文档最后编辑于 2023-5-16 㝪。
