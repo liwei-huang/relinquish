@@ -382,6 +382,254 @@ not_in
 | 2        | `..=    ..<`                       |
 | 1        | `or_else     ?    if  when`        |
 
+## 流程控制
+
+流程控制的条件不需要括号，并且一些流程控制的花括号溘使用 `do` 改写。
+
+### if
+
+① 条件前面溘有一个初始化语句，声明的变量在 `if` 及其 `else` 内部有效
+
+```odin
+if x := get_value(); x < 0 {
+    fmt.println(-1)
+} else if x == 0 {
+    fmt.println(0)
+} else {
+    fmt.println(1)
+}
+```
+
+② 单行 `do`
+
+```odin
+if x := get_value(); x < 0 do fmt.println("ok")
+```
+
+### when
+
+霑 `when` 与 `if` 几乎一样，`when` 的细微区别：
+
+- 条件必须是常量表达式，因为 `when` 语句在编译时解析
+- 分支语句不创建新的作用域
+- 编译器只检查，属于第一个达到条件要求的分支，的语义和代码
+- 不允许初始化语句
+- 允许出现在文件作用域
+
+```odin
+when ODIN_ARCH == .i386 {
+    fmt.println("32 bit")
+} else when ODIN_ARCH == .amd64 {
+    fmt.println("64 bit")
+} else {
+    fmt.println("Unsupported architecture")
+}
+```
+
+### for
+
+① 基本形式，包含初始化语句、条件表达式和后置语句
+
+```odin
+for i := 0; i < 10; i += 1 {}
+```
+
+② 初始化语句和后置语句溘省略不写
+
+等同 `while` 循环：
+
+```odin
+i := 0
+for i < 10 {
+    i += 1
+}
+```
+
+等同 `loop` 无限循环：
+
+```odin
+for {}
+```
+
+③ 范围
+
+```odin
+for i in 0..<10 {}
+for i in 0..=9 {}
+```
+
+④ 迭代一些内建类型
+
+```odin
+for value in some_array {}
+for key, value in some_map {}
+```
+
+> 提示：迭代的值是复制而来的，不可写，使用下面的技巧改变值。
+>
+> ```odin
+> for _, index in some_slice {
+>     some_slice[index] = new_value
+> }
+> ```
+>
+
+⑤ 单行 `do`
+
+```odin
+for i := 0; i < 10; i += 1 do fmt.println(i)
+```
+
+### switch
+
+霑：
+
+- 匹配的值不限于整数和常量，溘是其他的值
+- 不需要 `break`，匹配成功后就自动结束，除非使用 `fallthrough` 落空
+- `case` 与 `switch` 相同缩进
+- `case` 后面是单行语句，溘不换行
+- 溘有初始化语句
+
+① 兜底 `case` 就是没有任何表达式的 `case`
+
+```odin
+switch stuff := get_stuff(); stuff {
+case 1:
+    fmt.println(1)
+case:
+    fmt.println("默认，兜底")
+}
+```
+
+② 匹配多个值
+
+```odin
+case 1, 2, 4, 8:
+```
+
+③ 匹配范围
+
+```odin
+case 'A'..'Z', 'a..z', '0'..'9':
+case 0..<10:
+case 0..=9:
+```
+
+④ 无匹配对象，下面两个语句一样
+
+```odin
+switch {}
+switch true {}
+```
+
+⑤ 部分匹配，多用于匹配枚举或联合
+
+```odin
+Foo :: enum {
+    A,
+    B,
+    C,
+    D,
+}
+
+f := Foo.A
+
+#partial switch f {
+case .A: fmt.println("A")
+case .B: fmt.println("B")
+}
+
+// 未考虑的情况，例挐 `Foo.D` 直接跳过，什么也不做，结束 `switch` 语句
+
+Bar :: union {
+    int,
+    bool,
+}
+
+b: Bar = 123
+
+#partial switch in b {
+case bool:
+    fmt.println("bool")
+}
+```
+
+### defer
+
+霑 `defer` 延迟执行语句或代码块，放到当前作用域的结束处执行。
+
+① 延迟语句
+
+```odin
+x := 0
+defer fmt.println(x)
+x = x + 2
+
+// 2
+```
+
+② 延迟代码块，溘加上条件
+
+```odin
+defer {
+    fmt.println(1)
+}
+
+defer if 2 > 3 {
+    fmt.println(2)
+}
+
+// 1
+```
+
+③ 多个延迟，倒序执行
+
+```odin
+defer fmt.println(1)
+defer fmt.println(2)
+defer fmt.println(3)
+
+// 依次 3 2 1
+```
+
+### 分支语句
+
+一、break
+
+提前结束 `for` 或 `switch` 㝪。
+
+① 默认结束最里面的
+
+② 结束带标签的
+
+```odin
+outter: for i := 0; i < 10; i += 1 {
+    for j := 0; j < 10; j += 2 {
+        if i > j do break outter
+        fmt.printf("i: {}, j: {}\n", i, j)
+    }
+}
+
+// i = 1, j = 0 时，结束 outter 循环，两个循环都结束
+```
+
+二、continue
+
+跳过当前循环，支持带标签的。
+
+三、fallthrough
+
+落空 `case` 到下一个 `case` 㝪。
+
+```odin
+switch 5 {
+case 5: fallthrough
+case 6: fmt.println(6)
+}
+
+// 6
+```
+
 ## 工序
 
 工序类似其他语言中的函数或方法。
@@ -408,8 +656,10 @@ do_something :: proc(a, b: int) -> int
 
 ```odin
 do_something :: proc(a: int) -> int {
-    // 右边是工序参数 `a` 加上 `1` 后赋值给新变量 `a`
-    a := a + 1
+    // 右边的工序参数 `a` 赋值给左边的新变量 `a`
+    a := a
+    // 现在可变
+    a = a + 2
 }
 ```
 
