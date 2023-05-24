@@ -57,6 +57,27 @@ main :: proc() {
 | 本地变量 | `snake_case`           |
 | 常量     | `SCREAMING_SNAKE_CASE` |
 
+六、调试
+
+① 打印
+
+```odin
+fmt.println() // 打印多数类型，格式默认
+fmt.printf("{}", var) // 自定义格式打印
+```
+
+② 断言
+
+```odin
+#assert(expr)
+```
+
+③ 获取值的类型
+
+```odin
+typeid_of(type_of(val))
+```
+
 ## 变量
 
 一、变量
@@ -861,4 +882,252 @@ import mado "../../moda"
 
 bime_cons :: false
 bime_ext := mado.adom_b
+```
+
+## 高级类型
+
+### 类型别名
+
+给类型起别名，仍然是同一个类型。
+
+```odin
+My_Int :: int
+#assert(My_Int == int)
+```
+
+### 分明类型
+
+指定该类型是一个不同的类型，具有不同的语义，即使它们本质是相同的。
+
+```odin
+My_Int :: distinct int
+#assert(My_Int != int)
+```
+
+### 定长数组
+
+霑：
+
+- 长度固定不变
+- 元素类型相同
+- 索引允许是整数、字符或枚举
+- 类型注解 `[length]T`
+
+① 创建
+
+明确长度：
+
+```odin
+larry := [5]int{1, 2, 3, 4, 5}
+```
+
+推断长度：
+
+```odin
+larry := [?]int{1, 2, 3, 4, 5}
+```
+
+② 索引，从 `0` 开始，不允许越界访问，除非有 `#no_bounds_check` 指令
+
+```odin
+larry[3]
+```
+
+③ 长度，元素个数
+
+```odin
+len(larry)
+```
+
+### 切片
+
+霑：
+
+- 长度在编译时未知
+- 元素类型相同
+- 类型注解 `[]T`
+- 切片就像是数组的引用，不存储数据，而是描述数组的一部分数据
+- 切片存储指向数组的指针，和切片长度
+
+① 切片，左闭右开
+
+基本：
+
+```odin
+spice := larry[1:4]
+```
+
+省略起始表示从 `0` 开始，省略结尾表示到数组最后一个元素，都省略表示整个数组：
+
+```odin
+larry[:4]
+larry[0:]
+larry[:]
+```
+
+② 切片字面量，数组字面量但不写长度
+
+```odin
+spice := []int{1, 2, 3, 4}
+```
+
+③ 空切片，长度䔺零，不指向任何数组
+
+```odin
+spice: []int
+fmt.println(spice == nil) // true
+```
+
+### 动态数组
+
+动态数组类似切片，不过长度在运行时可变，类型注解 `[dynamic]T` 㝪。
+
+① 创建
+
+```odin
+dyn := [dynamic]int{1, 2}
+```
+
+② 容量
+
+```odin
+cap(dyn)
+```
+
+③ 前置元素
+
+```odin
+append(&dyn, 3)
+append(&dyn, 4, 5, 6)
+```
+
+④ 使用 `make` 显式分配，使用 `delete` 释放
+
+```odin
+a := make([dynamic]int, 6) // len: 6, cap: 6
+b := make([dynamic]int, 0, 6) // len: 0, cap: 6
+
+aa := make([dynamic]int, 6, context.allocator)
+bb := make([dynamic]int, 0, 6, context.allocator)
+
+made := make([]int, 3) // len: 3
+literal := []int{1, 2, 3} // len: 3
+
+delete(a)
+delete(b)
+
+delete(aa)
+delete(bb)
+
+// 字面量切片不需要释放，所以没有 `delete(literal)`
+delete(made)
+```
+
+### 枚举
+
+① 值是有序的，从 `0` 开始
+
+```odin
+Direction :: enum {
+    North,
+    East,
+    South,
+    West,
+}
+// 0
+fmt.println(int(Direction.North))
+```
+
+② 自定义序号数值
+
+```odin
+Direction :: enum {
+    North,
+    East = 3,
+    South,
+    West,
+}
+```
+
+③ 自定义大小，默认 `int`，接受整数类型
+
+```odin
+Direction :: enum u8 {}
+```
+
+④ 隐式选择器表达式
+
+```odin
+.West == Direction.West
+```
+
+### 集合
+
+霑：
+
+- 元素是枚举或范围
+- 内部使用位矢量实现，性能高
+- 默认值是 `nil` 或 `{}`
+
+① 声明
+
+基本：
+
+```odin
+Direction_Set :: bit_set[Direction]
+Number_Set :: bit_set[0..<10]
+```
+
+指定大小：
+
+```odin
+Number_Set :: bit_set[0..<10; u16]
+```
+
+② 创建
+
+```odin
+ds: Direction_Set = {.East, .West}
+ns: Number_Set = {1, 5, 7}
+```
+
+③ 获取元素个数（集合基数）
+
+```odin
+card(ds)
+```
+
+④ 一些操作
+
+| 操作                | 含义     |
+| ------------------- | -------- |
+| `A + B` 或 `A | B`  | 并集     |
+| `A - B` 或 `A &~ B` | 差集     |
+| `A & B`             | 交集     |
+| `A ~ B`             | 对称差集 |
+| `A == B`            | 集合相等 |
+| `e in A`            | 集员     |
+
+### 指针
+
+指针是值的内存地址。
+
+① 获取地址（如果可能）
+
+```odin
+marry := [3]int{1, 2, 3}
+addr := &marry
+```
+
+② 类型
+
+```odin
+// ^[3]int
+typeid_of(type_of(addr))
+```
+
+③ 解引用
+
+```odin
+addr^ == marry
 ```
