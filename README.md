@@ -40,7 +40,7 @@
 
 ## 二组
 
-### Substract
+### 平淡
 
 - Elm
 - Groovy
@@ -50,13 +50,13 @@
 - Ruby
 - Vala
 
-### Array
+### 数组
 
 - APL
 - BQN
 - J
 
-### Realm
+### 领域
 
 - Ballerina
 - Nix
@@ -65,7 +65,7 @@
 
 ## 三组
 
-### Popular
+### 流行
 
 - C
 - C++
@@ -76,7 +76,7 @@
 - R
 - Swift
 
-### Nightly
+### 新鲜
 
 - Carbon
 - Jai
