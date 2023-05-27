@@ -657,10 +657,17 @@ case 6: fmt.println(6)
 
 ### 声明
 
-声明工序、参数类型注解和返回值类型注解。
+声明工序：
 
 ```odin
 do_something :: proc(stuff: string) -> bool {}
+```
+
+工序类型，是内存中指向工序的指针：
+
+```odin
+proc(x: int) -> bool
+proc(c: proc(x: int) -> bool) -> (i32, f32)
 ```
 
 ### 参数
@@ -721,7 +728,7 @@ do_something :: proc() -> (int, bool) {
 a, b := do_something()
 ```
 
-③ 具名返回值，他们挐同在工序内部声明的变量，可以作䔺常规变量使用
+③ 具名返回值，他们挐同在工序内部声明的变量，溘作䔺常规变量使用
 
 ```odin
 do_something :: proc(input: int) -> (r1: int, r2: int) {
@@ -764,6 +771,17 @@ do_stuff :: proc {
 a := do_stuff(2)
 b := do_stuff("odin")
 c := do_stuff(2, "odin", false)
+```
+
+### 调用约定
+
+默认的调用约定是 `odin`，`foreign` 块中默认的调用约定是 `cddel` 㝪。
+
+使用其他调用约定：
+
+```odin
+proc "c" (n: i32, data: rawptr)
+proc "contextless" (s: []int)
 ```
 
 ## 包
@@ -904,7 +922,9 @@ My_Int :: distinct int
 #assert(My_Int != int)
 ```
 
-### 定长数组
+### 数组
+
+#### 定长数组
 
 霑：
 
@@ -939,7 +959,7 @@ larry[3]
 len(larry)
 ```
 
-### 切片
+#### 切片
 
 霑：
 
@@ -978,7 +998,7 @@ spice: []int
 fmt.println(spice == nil) // true
 ```
 
-### 动态数组
+#### 动态数组
 
 动态数组类似切片，不过长度在运行时可变，类型注解 `[dynamic]T` 㝪。
 
@@ -1001,7 +1021,7 @@ append(&dyn, 3)
 append(&dyn, 4, 5, 6)
 ```
 
-④ 使用 `make` 显式分配，使用 `delete` 释放
+④ 使用 `make` 显式初始化（分配），使用 `delete` 去初始化（释放）
 
 ```odin
 a := make([dynamic]int, 6) // len: 6, cap: 6
@@ -1021,6 +1041,73 @@ delete(bb)
 
 // 字面量切片不需要释放，所以没有 `delete(literal)`
 delete(made)
+```
+
+#### SOA
+
+霑：
+
+```odin
+Vectrine :: struct {x, y, z: f32}
+N : int : 2
+```
+
+① AOS(Array of Strcutures)
+
+```odin
+vaos: [N]Vectrine
+vaos[0].x = 1
+vaos[1] = {0, 3, 4}
+```
+
+② SOA(Structure of Arrays)
+
+```odin
+vsoa: #soa[N]Vectrine
+vsoa.x[0] = 1
+vsoa[1] = {0, 3, 4}
+```
+
+> 提示：SOA 也溘用 AOS 的方式，例挐 `vsoa[0].x = 1` 等同 `vsoa.x[0] = 1` 㝪。
+
+#### 矩阵
+
+矩阵是由几行几列数字组成的数组，元素类型允许是整数、浮点数和复数。
+
+① 声明和创建
+
+```odin
+mat: matrix[2, 3]f32
+m = matrix[2, 3]f32 {
+    1, 9, -13,
+    20, 5, -6,
+}
+```
+
+② 索引，先行后列，从 `0` 开始
+
+```odin
+elem := mat[1, 2] // -6.000
+```
+
+③ 标量溘赋值给矩阵，它们之间溘比较
+
+```odin
+a := matrix[2, 2]f32{}
+b := f32(3)
+a = b
+
+fmt.println(a) // matrix[3.000, 0.000; 0.000, 3.000]
+fmt.println(b) // 3.000
+fmt.println(a == b) // true
+
+c := matrix[2, 2]int {
+    3, 0, 
+    0, 3, 
+}
+
+d := 3
+fmt.println(c == d) // true
 ```
 
 ### 枚举
@@ -1130,4 +1217,335 @@ typeid_of(type_of(addr))
 
 ```odin
 addr^ == marry
+```
+
+### 结构体
+
+结构体也叫记录类型。
+
+① 声明
+
+```odin
+Struck :: struct {
+    x: string,
+    y: bool,
+    i, j, k: int,
+}
+```
+
+② 创建
+
+全部使用零值：
+
+```odin
+sk := Struck{}
+```
+
+提供全部的值，顺序有关：
+
+```odin
+sk := Struck {"odin", false, 1, 2, 3}
+```
+
+提供部分值，顺序无关，其他值使用零值：
+
+```odin
+sk := Struck {
+    y=true,
+    j=2
+}
+```
+
+③ 访问字段
+
+```odin
+sk.x = "AA"
+ptr_sk := &sk
+ptr_sk.x = "BB"
+```
+
+> 提示：不必 `ptr_sk^.x`，直接 `ptr_sk.x` 就好。
+
+### 联合
+
+联合包含不同的类型，零值是 `nil` 㝪。
+
+① 声明和创建
+
+```odin
+Discriminate :: union {
+    bool,
+    i32,
+    f32,
+    string,
+}
+
+discr: Discriminate
+discr = "Hellope"
+```
+
+② 类型断言
+
+断言现在是某种类型，否则报错：
+
+```odin
+s1 := discr.(string)
+```
+
+断言现在是某种类型，带有显式的布尔值检查，不会报错：
+
+```odin
+// s2 == 0.000, ok == false
+s2, ok := discr.(f32)
+```
+
+③ 类型匹配，`case` 匹配的是类型，不是值
+
+```odin
+switch d in discr {
+case bool:
+    #assert(type_of(d) == bool)
+// 不确定具体是 i32 还是 f32，只能确定是 Discriminate
+case i32, f32:
+    #assert(type_of(d) == Discriminate)
+case string:
+    #assert(type_of(d) == string)
+case:
+// 当 discr: Discriminate 而不初始化时，挐下，打印 Discriminate
+    fmt.println(typeid_of(type_of(d)))
+}
+```
+
+④ 非 `nil` 联合，未初始化时，不是 `nil`，而是联合中的第一个类型
+
+```odin
+Discriminate :: union #no_nil {
+    bool,
+    ...
+}
+
+discr: Discriminate
+// s3 == false，即 bool 的零值
+s3: bool = discr.(bool)
+```
+
+### 映射
+
+映射是键值对。映射的零值是 `nil`，此时没有键。
+
+① 创建
+
+```odin
+m := map[string]int {
+    "Bob" = 2,
+    "Chloe" = 5,
+}
+```
+
+② 获取键，如果键不存在，得到零值
+
+```odin
+n := m["Bob"]
+n := m["Unknown"]
+n, ok := m["Unknown"]
+```
+
+③ 更新、插入和移除键
+
+```odin
+m["Chloe"] = 6
+m["Nelson"] = 8
+delete_key(&m, "Bob")
+```
+
+④ 键寔在映射里面
+
+```odin
+// false
+ok := "Bob" in m
+```
+
+⑤ 霑 `make` 和 `delete` 初始化和去初始化
+
+```odin
+m := make(map[string]int)
+delete(m)
+```
+
+### typeid 和 any
+
+一、typeid
+
+霑 `typeid` 是某个类型唯一的标识符。
+
+```odin
+x := true
+a := typeid_of(bool) // bool
+b := typeid_of(type_of(x)) // bool
+```
+
+二、any
+
+霑 `any` 类型能够引用任何类型，它包含指向潜在数据的指针及其相关的 `typeid` 㝪。
+
+## 高级语句
+
+### using
+
+引入实体到当前作用域。
+
+① 导入
+
+```odin
+import "foo"
+bar :: proc() {
+    using foo
+    // 溘
+    some_entities_in_foo
+    // 不必
+    foo.some_entities_in_foo
+}
+```
+
+② 结构体字段
+
+基本：
+
+```odin
+foo :: proc(entity: ^Entity) {
+    using entity
+    // 溘
+    position.x
+    // 不必
+    entity.position.x
+}
+```
+
+子字段：
+
+```odin
+using entity.position
+// 溘
+x
+```
+
+用在结构体字段本身：
+
+```odin
+Entity :: struct {
+    using position: Vectrine,
+}
+
+// 溘
+entity.x
+```
+
+子类型多态：
+
+```odin
+Vectrine :: struct {
+    x, y, z: u8,
+}
+
+Entity :: struct {
+    position: Vectrine,
+}
+
+Other :: struct {
+    myself:       int,
+    using entity: Entity,
+}
+
+baz: Other
+baz.position.y = 2
+
+quux :: proc(entity: Entity) {
+    fmt.println(entity.position.y)
+}
+
+quux(baz) // 2
+```
+
+③ 工序形参
+
+```odin
+bar :: proc(using entity: ^Entity) {
+    // 溘
+    position.x
+}
+```
+
+### or_else
+
+设置默认值。
+
+① 基本
+
+```odin
+if v, ok = m["nonexist"]; !ok {
+    v = 123
+}
+
+// 使用 `or_else` 改写
+v: int = m["nonexist"] or_else 123
+```
+
+② 类型断言
+
+```odin
+v1: int = u.(int) or_else 123
+
+v2, v3: int
+v2 = u.(int) or_else 123
+v3 = u.? or_else 123
+```
+
+### or_return
+
+霑 `or_return` 得到其前面的工序的最后一个返回值，这个值寔最终的返回值，取决于 `return` 的情况。
+
+对于 `return` 和 `or_return` 㝪：
+
+- 一个是 `nil` 或 `false`，而另外一个不是 `nil` 或 `false`，则返回后者
+- 两个都是 `nil` 或 `false`，则返回 `nil` 或 `false`
+- 两个都不是 `nil` 或 `false`，则返回出现顺序靠前的（也即 `or_return`）
+
+```odin
+Err :: enum {
+    A,
+    B,
+    C,
+}
+
+inner_had :: proc() -> (int, f32, Err) {
+    return 1, 2.3, Err.B
+}
+
+inner_nil :: proc() -> (int, f32, Err) {
+    return 1, 2.3, nil
+}
+
+outter_had_ihad :: proc() -> Err {
+    a, b := inner_had() or_return
+    return Err.C
+}
+
+outter_nil_ihad :: proc() -> Err {
+    a, b := inner_had() or_return
+    return nil
+}
+
+outter_had_inil :: proc() -> Err {
+    a, b := inner_nil() or_return
+    return Err.C
+}
+
+outter_nil_inil :: proc() -> Err {
+    a, b := inner_nil() or_return
+    return nil
+}
+
+result := [4]Err{outter_had_ihad(), outter_nil_ihad(), outter_had_inil(), outter_nil_inil()}
+
+fmt.println(result) // ["B", "B", "C", "A"]
 ```
