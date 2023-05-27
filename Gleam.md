@@ -539,11 +539,229 @@ pub fn f1() -> Result {}
 pub fn f2() -> gleam.Result(Int, Nil) {}
 ```
 
+## 自定义类型
+
+自定义类型是键和值的具名集合，类似其他语言的对象，但是没有方法。
+
+### 构造器（变体）
+
+自定义类型有一个或多个构造器，也称䔺变体。
+
+只有一个构造器时，溘使用 `.` 访问记录的字段
+
+```gleam
+type Single {
+    Sole(x: Int, y: Int, z: Int)
+}
+
+Sole.x
+```
+
+一、无记录
+
+```gleam
+type User {
+    Admin
+    Guest
+}
+
+// 不要 User.Admin
+let a: User = Admin
+```
+
+二、有记录，记录由字段和对应的值组成
+
+① 只有一个字段，不需要名字，只写类型
+
+```gleam
+type Cat {
+    Kat(String)
+}
+
+let a: Cat = Kat("Katty")
+```
+
+② 多个字段
+
+```gleam
+type Cat {
+    Kat(name: String, age: Int)
+}
+
+let a: Cat = Kat("Biffy", 4)
+let b: Cat = Kat(age: 3, name: "Ginny")
+```
+
+③ 使用 `..` 展开记录，后面更新字段的值，不改变原来的记录，而是结合原本的记录与新的值，创建一个新的记录
+
+```gleam
+Kat(..cat1, age: cat1.age + 1)
+```
+
+### 匹配自定义类型
+
+霑。
+
+```gleam
+type User {
+    LoggedIn(name: String)
+    Guest
+}
+
+type X {
+    Xyle(x: Int, y: Int, z: Int, o: Int)
+}
+```
+
+① 模式匹配
+
+```gleam
+case usr {
+    LoggedIn(name) -> io.println(name)
+    Guest -> io.println("Guest")
+}
+```
+
+② 绑定匹配，匹配并重命名字段
+
+```gleam
+let Cat(name, age: renamed_age) = cat2
+```
+
+③ 跳过 `_`，忽略 `..`
+
+```gleam
+let Xyle(_, y, ..) = Xyle(1, 2, 3, 4)
+```
+
+### 类型别名
+
+自定义类型和类型别名都使用 `type` 关键字定义，区别是前者使用 `{}` 定义内容，后者使用 `=` 定义内容。
+
+```gleam
+type SomeAlias = #(Int, Float)
+```
+
+### 泛型
+
+泛型，在自定义类型名字后面，加上圆括号，里面就是类型参数。
+
+```gleam
+type Lair(a, b) {
+    Lairl(left: a, right: b, medium: List(b))
+    Lairy(Result(a, b))
+}
+```
+
+### 不透明类型
+
+不透明类型，让其他模块不能访问和修改该类型，只能通过公共的函数间接访问或者修改。
+
+```gleam
+// src/opa/counter.gleam
+pub opaque type Counter {
+  Counter(value: Int)
+}
+
+pub fn new() {
+  Counter(0)
+}
+
+pub fn increment(counter: Counter) {
+  Counter(counter.value + 1)
+}
+
+pub fn get_value(counter: Counter) {
+  counter.value
+}
+```
+
+```gleam
+import gleam/io
+import opa/counter
+
+pub fn main() {
+  let c = counter.new()
+
+  // io.debug(c.value) 出错，无法访问
+  // 应该
+  io.debug(counter.get_value(c))
+
+  // 修改
+  let c = counter.increment(c)
+  io.debug(counter.get_value(c))
+}
+```
+
+> 注意：`pub opaque type` 虽然看上去反直觉，但这是必须的，没有 `opaque type` 这种写法。
+
+## Result 和 Option
+
+### Result
+
+霑 Gleam 没有 `null` 和异常，而是使用 `Result(value, reason)` 类型代表可能缺失或出错的结果：
+
+- `Ok(value)` 构造器（变体）代表成功的结果，并携带结果的数据 `value`
+- `Error(reason)` 构造器（变体）代表错误的结果，并携带错误的原因 `reason`，或者 `Nil` 表示没有值
+
+① 使用 `case` 匹配 `Result` 类型，以获得具体的值
+
+```gleam
+let r = case 3 > 2 {
+    True -> Ok("是的，3 大于 2。")
+    False -> Error("不，3 小于 2。")
+}
+
+case r {
+    Ok(v) -> io.println(v)
+    Error(e) -> io.println(e)
+}
+```
+
+② 使用 `assert` 断言
+
+断言 `Result` 一定是 `Ok(value)`，就不用处理 `Error(reason)` 的情况：
+
+```gleam
+// "是的，3 大于 2。"
+let assert Ok(value) = r
+```
+
+如果 `Result` 是 `Error(reason)`，则报错。
+
+### Option
+
+霑 `Option` 表示一个值可能存在，也可能缺失：
+
+- `Some(value)`，值存在
+- `None`，值不存在
+
+> 提示：`Option` 不是序曲导入，需要导入 `gleam/option` 模块。
+
+```gleam
+import gleam/option.{Some, None}
+
+let r = case 3 > 2 {
+    True -> Some("Yes")
+    False -> None
+}
+
+case r {
+    Some(v) -> io.println(v)
+    None -> io.println("Nil")
+}
+
+// 也支持断言
+let assert Some(v) = r
+```
+
 ## 高级类型
 
 ### 位字符串
 
-位字符串 `BitString` 代表一序列二进制数据，以 `<<>>` 形式表示。
+位字符串 `BitString` 代表原生 bit 字符串数据，以 `<<>>` 形式表示。
+
+一、基本
 
 ① 霑 `size()` 设置每个分区所占的位数，默认是 8 位，即一字节，溘简写，直接写数字
 
@@ -593,3 +811,60 @@ io.debug(<<"Hello Gleam":utf8>>)
 ```
 
 ⑥ 还有很多其他的选项，按照 `BitString` 所处的位置（等号左边是匹配，等号右边是值）溘分䔺匹配选项和值选项两类
+
+二、函数，导入 `gleam/bit_string` 模块
+
+① 转换
+
+霑 `String` 转 `BitString` 㝪：
+
+```gleam
+bit_string.from_string("Gleam") // "Gleam"
+```
+
+霑 `BitString` 转 `String` 㝪：
+
+```gleam
+bit_string.to_string(<<78>>) // "N"
+```
+
+② 寔合法的 UTF-8 字符串
+
+```gleam
+bit_string.is_utf8(<<1>>) // True
+```
+
+### 映射
+
+映射是键和值的字典：
+
+- 键和值溘是任何类型，但所有键的类型一致，所有值的类型一致
+- 键不能重复
+- 键是无序的
+
+① 创建
+
+使用 `from_list` 㝪：
+
+```gleam
+let a: Map(String, Int) = map.from_list([#("x", 10), #("y", 20)])
+```
+
+使用 `new` 㝪：
+
+```gleam
+let c: Map(Bool, Float) = map.new()
+let c = map.insert(c, True, 1.23)
+let c = map.insert(c, False, -1.23)
+```
+
+③ 取得值
+
+```gleam
+let assert Ok(b) = map.get(a, "y")
+let assert Ok(d) = map.get(c, True)
+```
+
+④ 迭代
+
+> Todo：待办
