@@ -853,18 +853,221 @@ let a: Map(String, Int) = map.from_list([#("x", 10), #("y", 20)])
 使用 `new` 㝪：
 
 ```gleam
-let c: Map(Bool, Float) = map.new()
-let c = map.insert(c, True, 1.23)
-let c = map.insert(c, False, -1.23)
+let c: Map(Bool, Float) = 
+    map.new()
+    |> map.insert(True, 1.23)
+    |> map.insert(False, -1.23)
 ```
 
-③ 取得值
+② 取得值
 
 ```gleam
 let assert Ok(b) = map.get(a, "y")
 let assert Ok(d) = map.get(c, True)
 ```
 
-④ 迭代
+③ 迭代
 
-> Todo：待办
+```gleam
+let a: Map(String, Int) = map.from_list([#("x", 10), #("y", 20)])
+let r = map.fold(a, "初始值", fn(accumulator, key, value) {
+    io.debug(key)
+    io.debug(value)
+    accumulator <> "-"
+})
+io.println(r)
+
+// "x"
+// 初始值--
+// 10
+// "y"
+// 20
+```
+
+> 注意：`map.fold` 迭代的顺序是无法保证的。
+
+### 套
+
+套中的元素是独一无二的。
+
+```gleam
+set.new()
+|> set.insert(1)
+|> set.insert(2)
+|> set.insert(1)
+|> set.to_list()
+// [1, 2]
+// 不是 [1, 2, 1]
+```
+
+### 对
+
+对是只有两个元素的元组。
+
+```gleam
+// "34"
+#(12, "34") |> pair.swap() |> pair.first() |> io.debug()
+```
+
+### 顺序
+
+顺序有三个变体：
+
+- `Eq`，等于
+- `Gt`，大于
+- `Lt`，小于
+
+```gleam
+import gleam/order.{Order, Eq, Gt, Lt}
+
+// Lt
+let r: Order = case get_pair(4, 3) {
+    #(a, b) if a > b -> Gt
+    #(a, b) if a < b -> Lt
+    _ -> Eq
+}
+
+order.to_int(Lt) // -1
+order.to_int(Eq) // 0
+order.to_int(Gt) // 1
+```
+
+### 队列
+
+队列是有序的集合，和列表很想，不过：
+
+- 队列，从前面或后面增加或移除元素的操作，性能好
+- 即使两个队列的元素一样，顺序也一样，它们也可能不相等（`==` 得到意想不到的结果），因为创建队列的方式不同，内部呈现就可能不同
+
+① 创建
+
+```gleam
+let q1: Queue(Int) = queue.from_list([-1, -2, -3])
+let q2 = 
+        queue.new()
+        |> queue.push_back(-1)
+        |> queue.push_back(-2)
+        |> queue.push_back(-3)
+
+// Queue([], [-1, -2, -3])
+// Queue([-3, -2, -1], [])
+io.debug(q1)
+io.debug(q2)
+```
+
+② 转列表
+
+```gleam
+// [-1, -2, -3]
+// [-1, -2, -3]
+io.debug(queue.to_list(q1))
+io.debug(queue.to_list(q2))
+```
+
+③ 增、删
+
+```gleam
+queue.push_back(q, -4)
+queue.push_front(q, 0)
+queue.pop_back(q)
+queue.pop_front(q)
+```
+
+④ 相等
+
+```gleam
+// True
+queue.is_equal(q1, q2)
+```
+
+## 高级函数
+
+函数模块里面的一些东西。
+
+### apply
+
+将参数传递给函数调用。
+
+```gleam
+let f1 = fn() {
+    fn(x: Int, y: Int) { x * y }
+}
+
+// 6
+f1() |> function.apply2(2, 3) |> io.debug
+
+let f2 = fn(x: Int, y: Int) {
+    x * y
+}
+
+// 6
+function.apply2(f2, 2, 3) |> io.debug
+```
+
+### compose
+
+组合函数。
+
+```gleam
+let f3 = fn(x: Int) -> Bool {
+    case x > 0 {
+        True -> True
+        False -> False
+    }
+}
+
+let f4 = fn(y: Bool) -> String {
+    case y {
+        True -> "真"
+        False -> "假"
+    }
+}
+
+// 假
+function.compose(f3, f4) |> function.apply1(-3) |> io.println
+```
+
+### curry
+
+柯里化。
+
+```gleam
+let f5 = fn(x: Float, y: Bool, z: String) -> Int {
+    io.debug(x)
+    io.debug(y)
+    io.println(z)
+    100
+}
+
+let f5a = function.curry3(f5) |> function.apply1(1.23)
+False |> f5a |> function.apply1("A") |> io.debug
+True |> f5a |> function.apply1("B") |> io.debug
+
+let f5b = function.curry3(f5) |> function.apply1(1.23) |> function.apply1(False)
+"A" |> f5b |> io.debug
+"B" |> f5b |> io.debug
+```
+
+### flip
+
+翻转参数。
+
+```gleam
+let f6 = fn(x, y) { x - y }
+
+// 4
+function.flip(f6) |> function.apply2(3, 7) |> io.debug
+```
+
+### tap
+
+传递参数给函数调用，并返回参数。
+
+```gleam
+let f7 = fn(x: Int) { io.debug(x) }
+let f8 = fn(x: Int) { x * 2 }
+
+// 100
+// 200
+function.tap(100, f7) |> f8 |> io.debug
+```
