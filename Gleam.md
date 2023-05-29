@@ -755,6 +755,26 @@ case r {
 let assert Some(v) = r
 ```
 
+### 备用和拆开
+
+① or
+
+```gleam
+Some(100) |> option.or(Some(10)) |> io.debug() // Some(100)
+None |> option.or(Some(10)) |> io.debug() // Some(10)
+Ok(100) |> result.or(Ok(10)) |> io.debug() // Ok(100)
+Error("错误") |> result.or(Ok(10)) |> io.debug() // Ok(10)
+```
+
+② unwrap
+
+```gleam
+Some(100) |> option.unwrap(10) |> io.debug() // 100
+None |> option.unwrap(10) |> io.debug() // 10
+Ok(100) |> result.unwrap(10) |> io.debug() // 100
+Error("错误") |> result.unwrap(10) |> io.debug() // 10
+```
+
 ## 高级类型
 
 ### 位字符串
@@ -978,6 +998,175 @@ queue.pop_front(q)
 ```gleam
 // True
 queue.is_equal(q1, q2)
+```
+
+### 迭代器
+
+迭代器是一系列懒加载的元素集合：
+
+- 集合很大，甚至无尽
+- 多数操作，例挐，过滤、映射、转化成新的迭代器等，是应用在流中的，并没有真正工作，只有需要解析这些流时，才真正一个一个拿出元素变换、处理
+
+① 创建
+
+(1) from_list
+
+```gleam
+let iter = iterator.from_list([10, 20, 30, 40])
+
+// [10, 20, 30, 40]
+io.debug(iterator.to_list(iter))
+```
+
+(2) range
+
+```gleam
+let iter = iterator.range(from: 1, to: -3)
+
+// [1, 0, -1, -2, -3]
+io.debug(iterator.to_list(iter))
+```
+
+(3) unfold
+
+```gleam
+import gleam/iterator.{Iterator, Done, Next}
+
+let iter: Iterator(Int) = iterator.unfold(-5, fn(n) {
+    case n {
+        n if n >= 0 -> Done
+        n -> Next(element: n, accumulator: n + 1)
+    }
+})
+
+// [-5, -4, -3, -2, -1]
+io.debug(iterator.to_list(iter))
+```
+
+② 遍历、迭代
+
+(1) each
+
+```gleam
+["g", "l", "e", "a", "m"]
+|> iterator.from_list()
+|> iterator.each(fn(n) {
+    io.print(n)
+})
+
+// gleam
+```
+
+(2) map
+
+```gleam
+[10, 20, 30]
+|> iterator.from_list()
+|> iterator.map(fn(n) {
+    n / 2
+})
+|> iterator.to_list()
+|> io.debug()
+
+// [5, 10, 15]
+```
+
+(3) fold
+
+```gleam
+["g", "l", "e", "a", "m"]
+|> iterator.from_list()
+|> iterator.fold("", fn(acc, curr) {
+    acc <> curr
+})
+|> io.debug()
+
+// "gleam"
+```
+
+(4) reduce
+
+```gleam
+iterator.range(0, 100)
+|> iterator.reduce(fn(acc, curr) {
+    acc + curr
+})
+|> io.debug()
+
+// Ok(5050)
+```
+
+③ 变换
+
+(1) transform
+
+```gleam
+// fn(
+//    Iterator(Int), 
+//    String, 
+//    fn(String, Int) -> Step(#(Float, String), String)
+// ) -> Iterator(#(Float, String))
+[1, 2, 3]
+|> iterator.from_list()
+|> iterator.transform("", fn(acc, curr) {
+    Next(#(int.to_float(curr), acc <> int.to_string(curr)), acc)
+})
+|> iterator.to_list()
+|> io.debug()
+
+// [#(1.0, "1"), #(2.0, "2"), #(3.0, "3")]
+```
+
+(2) scan
+
+```gleam
+["g", "l", "e", "a", "m"]
+|> iterator.from_list()
+|> iterator.scan("", fn(acc, curr) {
+    acc <> curr
+})
+|> iterator.to_list()
+|> io.debug()
+
+// ["g", "gl", "gle", "glea", "gleam"]
+```
+
+(3) chunk
+
+```gleam
+[2, 7, 5, 9, 12, 16, 11]
+|> iterator.from_list()
+|> iterator.chunk(fn(n) {
+    n % 2 == 0
+})
+|> iterator.to_list()
+|> io.debug()
+
+// [[2], [7, 5, 9], [12, 16], [11]]
+```
+
+(4) zip
+
+```gleam
+let iter1 = iterator.from_list(["a", "b", "c"])
+let iter2 = iterator.range(10, 13)
+iterator.zip(iter1, iter2) |> iterator.to_list() |> io.debug()
+
+// [#("a", 10), #("b", 11), #("c", 12)]
+```
+
+④ 运行
+
+```gleam
+[
+    io.print("a"),
+    io.print("b"),
+    io.print("c"),
+]
+|> iterator.from_list()
+|> iterator.run()
+
+// abc
 ```
 
 ## 高级函数
