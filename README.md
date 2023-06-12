@@ -1,86 +1,125 @@
 # 语言
 
-垃圾 💩 体育测试和汽轮机课程设计，毁灭我 💀 㝪。
+垃圾 💩 汽轮机课程设计和热动实验，毁灭我 💀 㝪。
 
-## 一组
+## 流行
 
-- Ada
+### 现代
+
+1. C
+2. C++
+3. C#
+4. Go
+5. Java
+6. JavaScript
+7. MATLAB
+8. Python
+9. R
+10. Rust
+11. Scratch
+12. SQL
+13. Swift
+
+### 历史
+
+14. Assembly language
+15. Classic Visual Basic
+16. Delphi/Object Pascal
+17. Fortran
+18. PHP
+19. Ruby
+20. Visual Basic
+
+## 喜欢
+
+### 可行
+
 - C#
-- Clojure
-- Coq
-- Crystal
-- D
-- Dylan
 - Elixir
 - Erlang
 - F#
-- Factor
-- Furthark
 - Gleam
-- Grain
-- Hack
-- Idris
-- IO
-- Julia
 - Koka
-- Lean
-- Modula
-- Nim
-- Oberon
-- OCaml
 - Odin
-- Pharo
-- Pony
-- Raku
 - Rust
-- Scala
-- Scheme
 - V
-- Val
-- Vale
 - Zig
 
-## 二组
+### 等待
 
-### 平淡
-
-- Elm
+- Ada
+- Ballerina
+- Dylan
+- Factor
 - Groovy
+- Haskell
+- IO
+- Julia
+- Nim
+- Oberon
+- Pony
+- Racket
+- Raku
+- Scala
+- X10
+
+### 不可行
+
+- Clojure
+- Futhark
+- Idris
+- Lisp
+- Modula
+- OCaml
+- Scheme
+
+## 一般
+
+- Crystal
+- D
+- Dart
+- Hack
 - Haxe
+- Kotlin
 - Lua
+- Perl
 - PHP
 - Ruby
+- TypeScript
 - Vala
 
-### 数组
+## 领域
+
+- Coq
+- Lean
+- Nix
+- Pharo
+- Q#
+- Solidity
+- X++
+
+## 未定义
+
+### A
+
+- Carbon
+- Jai
+- Mojo
+
+### B
 
 - APL
 - BQN
 - J
 
-### 领域
+### C
 
-- Ballerina
-- Nix
-- Q#
-- Solidity
+- Elm
+- Grain
+- Reason
 
-## 三组
+### 冷门
 
-### 流行
-
-- C
-- C++
-- Dart
-- Java
-- Kotlin
-- Python
-- R
-- Swift
-
-### 新鲜
-
-- Carbon
-- Jai
-- Mojo
 - Roc
+- Val
+- Vale
