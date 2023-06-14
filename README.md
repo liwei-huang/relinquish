@@ -22,17 +22,17 @@
 
 ### 历史
 
-14. Assembly language
-15. Classic Visual Basic
-16. Delphi/Object Pascal
-17. Fortran
-18. PHP
-19. Ruby
-20. Visual Basic
+1. Assembly language
+2. Classic Visual Basic
+3. Delphi/Object Pascal
+4. Fortran
+5. PHP
+6. Ruby
+7. Visual Basic
 
 ## 喜欢
 
-### 可行
+### 已安装
 
 - C#
 - Elixir
@@ -45,52 +45,67 @@
 - V
 - Zig
 
-### 等待
-
-- Ada
-- Ballerina
-- Dylan
-- Factor
-- Groovy
-- Haskell
-- IO
-- Julia
-- Nim
-- Oberon
-- Pony
-- Racket
-- Raku
-- Scala
-- X10
-
-### 不可行
+### 无法安装
 
 - Clojure
 - Futhark
 - Idris
 - Lisp
-- Modula
 - OCaml
 - Scheme
 
-## 一般
+## 悬念
+
+### 热
+
+- Dart
+- Groovy
+- Haskell
+- Julia
+- Kotlin
+- Lua
+- Scala
+- TypeScript
+
+### 中
 
 - Crystal
 - D
-- Dart
 - Hack
-- Haxe
-- Kotlin
-- Lua
-- Perl
-- PHP
-- Ruby
-- TypeScript
+- Nim
 - Vala
 
-## 领域
+### 冷
 
+- Arc
+- Ballerina
+- BEEF
+- Dylan
+- Gravity
+- Haxe
+- Pony
+- Racket
+- Raku
+- SKIP
+- Wren
+- X10
+
+### 旧
+
+- Ada
+- Factor
+- Icon
+- IO
+- Ioke
+- Modula
+- Oberon
+- Perl
+
+## 未定义
+
+- Checked C
 - Coq
+- Inform
 - Lean
 - Nix
 - Pharo
@@ -98,21 +113,21 @@
 - Solidity
 - X++
 
-## 未定义
+## 其他
 
-### A
+### 新
 
 - Carbon
 - Jai
 - Mojo
 
-### B
+### 数组
 
 - APL
 - BQN
 - J
 
-### C
+### 前端
 
 - Elm
 - Grain
@@ -120,6 +135,7 @@
 
 ### 冷门
 
+- Lobster
 - Roc
 - Val
 - Vale
