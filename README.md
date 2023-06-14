@@ -30,112 +30,173 @@
 6. Ruby
 7. Visual Basic
 
-## 喜欢
+## 探索
 
-### 已安装
+### 大众
 
 - C#
+- Rust
+
+### 中众
+
 - Elixir
 - Erlang
 - F#
-- Gleam
-- Koka
-- Odin
-- Rust
 - V
 - Zig
 
-### 无法安装
+### 小众
 
-- Clojure
-- Futhark
-- Idris
-- Lisp
-- OCaml
-- Scheme
+- Gleam
+- Koka
+- Odin
 
-## 悬念
+## 字母
 
-### 热
-
-- Dart
-- Groovy
-- Haskell
-- Julia
-- Kotlin
-- Lua
-- Scala
-- TypeScript
-
-### 中
-
-- Crystal
-- D
-- Hack
-- Nim
-- Vala
-
-### 冷
-
-- Arc
-- Ballerina
-- BEEF
-- Dylan
-- Gravity
-- Haxe
-- Pony
-- Racket
-- Raku
-- SKIP
-- Wren
-- X10
-
-### 旧
+### A
 
 - Ada
-- Factor
-- Icon
-- IO
-- Ioke
-- Modula
-- Oberon
-- Perl
+- APL
+- Arc
 
-## 未定义
+### B
 
-- Checked C
-- Coq
-- Inform
-- Lean
-- Nix
-- Pharo
-- Q#
-- Solidity
-- X++
+- Ballerina
+- BEEF
+- BQN
 
-## 其他
-
-### 新
+### C
 
 - Carbon
+- Checked C
+- Clojure
+- Coq
+- Crystal
+
+### D
+
+- D
+- Dart
+- Dylan
+
+### E
+
+- Elixir
+- Elm
+- Erlang
+
+### F
+
+- F#
+- Factor
+- Futhark
+
+### G
+
+- Gleam
+- Grain
+- Gravity
+- Groovy
+
+### H
+
+- Hack
+- Haskell
+- Haxe
+
+### I
+
+- IO
+- Idris
+
+### J
+
+- J
 - Jai
+- Julia
+
+### K
+
+- Koka
+- Kotlin
+
+### L
+
+- Lean
+- Lisp
+- Lobster
+- Lua
+
+### M
+
+- ML
+- Modula
 - Mojo
 
-### 数组
+### N
 
-- APL
-- BQN
-- J
+- Nim
+- Nix
 
-### 前端
+### O
 
-- Elm
-- Grain
+- Objective-C
+- Oberon
+- OCaml
+- Odin
+
+### P
+
+- Perl
+- Pharo
+- Pony
+
+### Q
+
+- Q#
+
+### R
+
+- Racket
+- Raku
 - Reason
-
-### 冷门
-
-- Lobster
 - Roc
+
+### S
+
+- Scala
+- Scheme
+- SKIP
+- Solidity
+
+### T
+
+- TypeScript
+
+### U
+
+- [U]
+
+### V
+
+- V
 - Val
+- Vala
 - Vale
+
+### W
+
+- Wren
+
+### X
+
+- X10
+- X++
+
+### Y
+
+- [Y]
+
+### Z
+
+- Zig
