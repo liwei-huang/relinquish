@@ -69,22 +69,39 @@
 
 完全未知：
 
-Ivy, Ferite, OMake, Emojicode, Nickle, Yacas, Zimbu, FontForge, Takt, Foo, Falcon,
+PostScript, AppleScript, ActionScript, MochiScript, MoeScript, LiteScript, RedScript,
+GorillaScript, ColaScript, DogeScript, CirruScript, LiveScript, MiniScript, PogoScript,
+PureScript, MoonScript, FlogScript, GolfScript,  AngelScript, CoffeeScript,
+ClojureScript, ReScript.
 
-Anko, SNOBOL, ooc, Cola, Hodor, Underload, Cat, Imba, Earl Grey, MochiScript,
+AliceML
+ATS
+Eff
+EmojiCode
+Euphoria
+Fantom
+Heron
+Hy
+Imba
+Kal
+Kaya
+Kitten
+Lang5
+Lush
+Mercury
+Move
+Neko
+Pike
+Seed7
+Squirrel
+Taichi
+Takt ? Tact
+Xtal
+Yacas
+Zimbu
 
-jisp, Sibilant, wisp, LispyScript,
+J, K
 
-Roy, MoeScript, Kal, Sipder, LiteScript, Stripes, Taiji, Khepri, RedScript, GorillaScript, ColaScript,
-
-Move, Jack, Kaffeine, Mammouth, DogeScript, CirruScript, MiniScript, Coco, Eff, PogoScript,
-
-Grass, MoonScript, C+=, lang5, LOLCODE, FlogScript,  GolfScript, Fancy, Hy, Shen, Zhpy, Croc,
-
-Lush, Lisaac, Salmon, AngelScript, PSL, Xtal, Sidef, Pnuts, Soopy, AliceML, Converge, ZKL,
-
-Kaya, Neko, Kitten, Befunge, Mirah, Thue, ATS, Golo, ZPL, Frege, jq, Joy, Lazy K, K, Pike,
-
-gnuplot, dc, bc, m4, Lisp Flavoured Erlang, PARI/GP.
+jisp, Sibilant, wisp, LispyScript
 
 㝪。
