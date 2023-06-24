@@ -2,106 +2,35 @@
 
 垃圾 💩 汽轮机课程设计、热动实验和生产实习，毁灭我 💀 㝪。
 
-| 其他             | 可能现代  |
-| ---------------- | --------- |
-| Ada              |           |
-| Agda             |           |
-| APL              |           |
-| Arc              |           |
-|                  | Ballerina |
-|                  | BEEF      |
-|                  | BlitzMax  |
-|                  | Bosque    |
-|                  | BQN       |
-| C#               | Carbon    |
-| Clean            | Citrine   |
-| Clojure          | Crystal   |
-| Common Lisp      |           |
-| Coq              |           |
-| Cuneiform        |           |
-| Cyclone          |           |
-| D                |           |
-| Eiffel           |           |
-| Elixir           |           |
-| Erlang           |           |
-| F#               | Futhark   |
-| Factor           |           |
-| Groovy           | Gleam     |
-|                  | Grain     |
-|                  | Gravity   |
-| Haskell          | Hack      |
-| Icon             |           |
-| Idris            |           |
-| IO               |           |
-| J                | Jai       |
-| Julia            |           |
-|                  | Koka      |
-| Lean             | Lobster   |
-| Lisp             |           |
-| Modula           | Mojo      |
-| Nim              |           |
-| Oberon           | Odin      |
-| OCaml            |           |
-| Oz               |           |
-| Perl             | Pony      |
-| Pharo            |           |
-| PHP              |           |
-| PureScript       |           |
-|                  | Q#        |
-| R                |           |
-| Racket           | Raku      |
-| Rebol            | Reason    |
-| Red              | Roc       |
-| Ruby             |           |
-| Rust             |           |
-| Scala            | SKIP      |
-| Scheme           | Solidity  |
-| Self             |           |
-| Squeak/Smalltalk |           |
-| Umple            |           |
-| Unicon           |           |
-| Vale             | V         |
-|                  | Val       |
-|                  | Vyper     |
-| Whiley           | Wren      |
-| XL               | X++       |
-|                  | Zig       |
+| 霑   | 㝪                                                           |
+| ---- | ------------------------------------------------------------ |
+| A    | Ada, Agda, AliceML, APL, ATS, Arc                            |
+| B    | Ballerina, Beef, BlitzMax, BQN                               |
+| C    | C#, C2, C3, Carbon, Citrine, Clean, Clojure, Common Lisp, Crystal |
+| D    | D                                                            |
+| E    | Eiffel, Elixir, Erlang, Euphoria                             |
+| F    | F#, Factor, Fantom, Futhark                                  |
+| G    | Gleam, Grain, Gravity, Groovy                                |
+| H    | Hack, Hare, Haskell, Hy                                      |
+| I    | Icon, Idris, Imba, Io                                        |
+| J    | J, Jai, Julia                                                |
+| K    | K, Koka                                                      |
+| L    | Lang5, Lean, Lobster                                         |
+| M    | Mercury, Mojo                                                |
+| N    | Neko, Nim                                                    |
+| O    | OCaml, Odin, Onyx, Oz                                        |
+| P    | Perl, Pike, Pony                                             |
+| Q    | Q#                                                           |
+| R    | Racket, Raku, Rebol, Red, Roc, Rust                          |
+| S    | Scala, Seed7, Skip, Solidity, Squeak, Squirrel               |
+| T    | Taichi, Tact                                                 |
+| U    | Umple, Unicon                                                |
+| V    | V, Val, Vale                                                 |
+| W    | Whiley, Wren                                                 |
+| X    | X++, XL                                                      |
+| Y    | Yacas                                                        |
+| Z    | Zig                                                          |
 
-完全未知：
-
-PostScript, AppleScript, ActionScript, MochiScript, MoeScript, LiteScript, RedScript,
-GorillaScript, ColaScript, DogeScript, CirruScript, LiveScript, MiniScript, PogoScript,
-PureScript, MoonScript, FlogScript, GolfScript,  AngelScript, CoffeeScript,
-ClojureScript, ReScript.
-
-AliceML
-ATS
-Eff
-EmojiCode
-Euphoria
-Fantom
-Heron
-Hy
-Imba
-Kal
-Kaya
-Kitten
-Lang5
-Lush
-Mercury
-Move
-Neko
-Pike
-Seed7
-Squirrel
-Taichi
-Takt ? Tact
-Xtal
-Yacas
-Zimbu
-
-J, K
-
-jisp, Sibilant, wisp, LispyScript
+霑：Reason, Sibilant, ReScript, TypeScript, ClojureScript, PureScript, AngelScript
 
 㝪。
