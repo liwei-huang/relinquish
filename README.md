@@ -31,7 +31,7 @@
 | Y    |                                        |                                     | Yacas                                  |
 | Z    |                                        | Zig                                 |                                        |
 | 符数 |                                        | 8th                                 |                                        |
-| JS   | TypeScript                             | ClojureScript, ReScript, PureScript | Imba, Sibilant                         |
+| JS   | TypeScript                             | ClojureScript, PureScript, ReScript | Imba, Sibilant                         |
 | 其他 |                                        | Reason                              | Clio, Pyret, Tact                      |
 
 㝪。
