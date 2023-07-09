@@ -6,14 +6,14 @@
 | ---- | -------------------------------------- | ----------------------------------- | -------------------------------------- |
 | A    | Ada, Agda, APL                         | Arc, AutoHotKey                     | AliceML, Arturo, Asymptote, ATS, Axiom |
 | B    | BQN                                    | Ballerina                           | Beef, BlitzMax, Bracmat                |
-| C    | C#, Clojure, Common Lisp, Coq, Crystal | C2, C3, Carbon                      | ChucK, Cind, Citrine, Clean            |
+| C    | C#, Clojure, Common Lisp, Coq, Crystal | C2, C3, Carbon                      | Carp, ChucK, Cind, Citrine, Clean      |
 | D    |                                        | D                                   | Dafny, Dragon, Dyalect                 |
 | E    | Eiffel                                 | Elixir, Elm, Erlang                 | Euphoria                               |
 | F    | F#, Forth, Futhark                     | Factor                              | Fantom, Faust                          |
 | G    |                                        | Groovy                              | Gerbil, Gleam, Grain, Gravity          |
 | H    | Haskell                                | Hack                                | Hare, Hy                               |
 | I    | Idris                                  | Icon, Io                            |                                        |
-| J    | J                                      | Jai, Julia                          |                                        |
+| J    | J                                      | Jai, Jakt, Julia                    |                                        |
 | K    |                                        |                                     | Koka, Kona                             |
 | L    |                                        | Lean                                | L++, Leo, LFE, Lobster                 |
 | M    |                                        | Mojo                                | Maxima                                 |
